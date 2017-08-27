@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Component Hub</string>
+    <string name="title_activity_dashboard">Dashboard</string>
+
+    <!-- Custom Strings -->
+    <string name="generic_error_message">Sorry! There was some error, please try again later.</string>
+
+    <!-- Navigation Drawer menu labels -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_inventory">Inventory</string>
+    <string name="nav_issue">Issue Component</string>
+    <string name="nav_report">Report Issue</string>
+    <string name="nav_signout">Sign Out</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="openDrawer">open_drawer</string>
+    <string name="closeDrawer">close_drawer</string>
+
+    <!-- Toolbar titles when navigation menu item is selected -->
+    <string-array name="nav_item_activity_titles">
+        <item>Dashboard</item>
+        <item>Inventory</item>
+        <item>Issue Component</item>
+        <item>Report Issue</item>
+        <item>Sign Out</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
