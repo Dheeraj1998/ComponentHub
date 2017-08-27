@@ -1,13 +1,9 @@
 package com.example.componenthub.activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -15,19 +11,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.telecom.Call;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.componenthub.R;
-import com.example.componenthub.fragment.HomeFragment;
+import com.example.componenthub.fragment.DashboardFragment;
 import com.example.componenthub.fragment.InventoryFragment;
 import com.example.componenthub.fragment.IssueFragment;
 import com.example.componenthub.fragment.ReportFragment;
@@ -42,18 +34,16 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static android.support.v7.widget.AppCompatDrawableManager.get;
-
-public class DashboardActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     private int QR_length = 8;
     private int max_IssueDays = 14;
     private DatabaseReference component_database;
-    private DatabaseReference user_database;
     private String issueDate;
     private String returnDate;
     FirebaseAuth mAuth;
@@ -71,7 +61,6 @@ public class DashboardActivity extends AppCompatActivity {
     private static final String TAG_PHOTOS = "photos";
     private static final String TAG_MOVIES = "movies";
     private static final String TAG_NOTIFICATIONS = "notifications";
-    private static final String TAG_SETTINGS = "settings";
     public static String CURRENT_TAG = TAG_HOME;
 
     // index to identify current nav menu item
@@ -84,7 +73,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -169,7 +158,7 @@ public class DashboardActivity extends AppCompatActivity {
         switch (navItemIndex) {
             case 0:
                 // home
-                HomeFragment homeFragment = new HomeFragment();
+                DashboardFragment homeFragment = new DashboardFragment();
                 return homeFragment;
             case 1:
                 // photos
@@ -184,7 +173,7 @@ public class DashboardActivity extends AppCompatActivity {
                 ReportFragment notificationsFragment = new ReportFragment();
                 return notificationsFragment;
             default:
-                return new HomeFragment();
+                return new DashboardFragment();
         }
     }
 
@@ -388,7 +377,7 @@ public class DashboardActivity extends AppCompatActivity {
         try {
             mAuth.signOut();
 
-            Intent temp = new Intent(DashboardActivity.this, SplashScreen.class);
+            Intent temp = new Intent(MainActivity.this, SplashScreen.class);
             startActivity(temp);
             finishAffinity();
             FirebaseDatabase.getInstance().goOffline();
