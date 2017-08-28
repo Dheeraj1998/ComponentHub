@@ -10,6 +10,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -23,7 +27,9 @@ import com.example.componenthub.fragment.DashboardFragment;
 import com.example.componenthub.fragment.InventoryFragment;
 import com.example.componenthub.fragment.IssueFragment;
 import com.example.componenthub.fragment.ReportFragment;
+import com.example.componenthub.other.IssueItemAdpater;
 import com.example.componenthub.other.SplashScreen;
+import com.example.componenthub.other.issued_item;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,7 +43,9 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -387,4 +395,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     //endregion
+
+    //region Code for handling the list of issued items to the user
+    public void getIssuedItems(){
+        component_database = FirebaseDatabase.getInstance().getReference().child("inventory_details");
+
+        // Connect to the database and create an event
+        component_database.orderByChild("CurrentIssue").equalTo(user_email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot single_value: dataSnapshot.getChildren()) {
+                    Log.i("custom",single_value.child("").getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //endregion
+
+
 }
