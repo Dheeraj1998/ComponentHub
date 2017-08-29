@@ -1,15 +1,28 @@
 package com.example.componenthub.other;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.componenthub.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.zxing.integration.android.IntentIntegrator;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -20,9 +33,14 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
 
     private Context mContext;
     private List<issued_item> issued_items;
+    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+    private DatabaseReference component_database;
+    private int reIssueLength = 14;
+    private String item_id, modified_date;
+    private int validate_return = 0;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView tv_component_name, tv_issue_date, tv_return_date;
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public TextView tv_component_name, tv_issue_date, tv_return_date, btn_renew, btn_return;
         public ImageView thumbnail;
 
         public MyViewHolder(View view) {
@@ -31,8 +49,66 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
             tv_component_name = (TextView) view.findViewById(R.id.card_component_name);
             tv_issue_date = (TextView) view.findViewById(R.id.card_issued_date);
             tv_return_date = (TextView) view.findViewById(R.id.card_return_date);
+
+            btn_renew = (TextView) view.findViewById(R.id.card_renew);
+            btn_return = (TextView) view.findViewById(R.id.card_return);
+
             thumbnail = (ImageView) view.findViewById(R.id.card_picture);
+
+            btn_return.setOnClickListener(this);
+            btn_renew.setOnClickListener(this);
         }
+
+        //region Code for renew/return of the components
+        @Override
+        public void onClick(View view) {
+            final View temp_view = view;
+            component_database = FirebaseDatabase.getInstance().getReference().child("inventory_details");
+
+            // Code for renewing the items
+            if (view.getId() == btn_renew.getId()) {
+                item_id = issued_items.get(getAdapterPosition()).getComponent_code();
+
+                component_database.child(item_id).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Calendar c = Calendar.getInstance();
+                        try {
+                            c.setTime(df.parse(dataSnapshot.child("Renewal").getValue().toString()));
+                            c.add(Calendar.DATE, reIssueLength);
+                            modified_date = df.format(c.getTime());
+                            component_database.child(item_id).child("Renewal").setValue(modified_date);
+
+                            Toast.makeText(temp_view.getContext(), "The renewal has been done!", Toast.LENGTH_SHORT).show();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            // Code for returning the items
+            else if (view.getId() == btn_return.getId()) {
+                item_id = issued_items.get(getAdapterPosition()).getComponent_code();
+
+                SharedPreferences store_content = view.getContext().getSharedPreferences("system_data", 0);
+                Editor editor = store_content.edit();
+
+                editor.putInt("type_operation", 0);
+                editor.putInt("list_index", getAdapterPosition());
+                editor.putString("item_id", issued_items.get(getAdapterPosition()).getComponent_code());
+                editor.apply();
+
+                IntentIntegrator QRScan = new IntentIntegrator((Activity) view.getContext());
+                QRScan.initiateScan();
+            }
+        }
+        //endregion
     }
 
     public IssueItemAdpater(Context mContext, List<issued_item> issued_items) {

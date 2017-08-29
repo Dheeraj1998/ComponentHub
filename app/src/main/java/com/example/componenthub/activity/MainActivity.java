@@ -1,6 +1,8 @@
 package com.example.componenthub.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -10,10 +12,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,9 +25,8 @@ import com.example.componenthub.fragment.DashboardFragment;
 import com.example.componenthub.fragment.InventoryFragment;
 import com.example.componenthub.fragment.IssueFragment;
 import com.example.componenthub.fragment.ReportFragment;
-import com.example.componenthub.other.IssueItemAdpater;
 import com.example.componenthub.other.SplashScreen;
-import com.example.componenthub.other.issued_item;
+import com.example.componenthub.other.generate_SC;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,19 +36,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-
-import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private int QR_length = 8;
     private int max_IssueDays = 14;
     private DatabaseReference component_database;
+    private DatabaseReference user_database;
     private String issueDate;
     private String returnDate;
     FirebaseAuth mAuth;
@@ -302,21 +295,43 @@ public class MainActivity extends AppCompatActivity {
         final Button scan_button = (Button) findViewById(R.id.btn_start_scan);
         final ProgressBar scan_progress = (ProgressBar) findViewById(R.id.prb_scan);
 
-        // Setting up the Progress bar
-        scan_button.setVisibility(View.INVISIBLE);
-        scan_progress.setVisibility(View.VISIBLE);
+        // Generate the dynamic security code for QR generation
+        generate_SC generated_sc = new generate_SC();
+        String security_code = generated_sc.get_security_code();
+        int security_code_length = generated_sc.security_code_length();
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
+        if (result != null && resultCode == RESULT_OK) {
             final String item_id = result.getContents();
 
+            if (result.getContents().length() == security_code_length) {
+                if (item_id.equals(security_code)) {
+                    SharedPreferences store_content = getApplicationContext().getSharedPreferences("system_data", 0);
+
+                    // Getting the reference for the item in database
+                    component_database = FirebaseDatabase.getInstance().getReference().child("inventory_details").child(store_content.getString("item_id", null));
+
+                    component_database.child("CurrentIssue").setValue("NA");
+                    component_database.child("IssueDate").setValue("NA");
+                    component_database.child("Renewal").setValue("NA");
+
+                    Toast.makeText(getApplicationContext(), "The item has been successfully returned.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "This is not a valid return code.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
             // Function to handle invalid QR scans
-            if (result.getContents() == null || result.getContents().length() != QR_length) {
+            else if (result.getContents() == null || result.getContents().length() != QR_length) {
                 Toast.makeText(this, "No valid QR code was found!", Toast.LENGTH_LONG).show();
             }
 
             // Function to handle correct QR codes
             else {
+                // Setting up the Progress bar
+                scan_button.setVisibility(View.INVISIBLE);
+                scan_progress.setVisibility(View.VISIBLE);
+
                 // Get the current date from the system
                 Calendar c = Calendar.getInstance();
 
@@ -331,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
                 component_database = FirebaseDatabase.getInstance().getReference().child("inventory_details").child(item_id);
 
                 // Getting the reference for the item in database
-//                user_database = FirebaseDatabase.getInstance().getReference().child("user_profiles");
+                user_database = FirebaseDatabase.getInstance().getReference().child("user_profiles");
 
                 // Connect to the database and create an event
                  component_database.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -348,7 +363,26 @@ public class MainActivity extends AppCompatActivity {
                              component_database.child("Renewal").setValue(returnDate);
 
                              // Stores the values in the issuer's database
-//                             user_database.orderByChild("email_address").equalTo("email_address").on("")
+                             user_database.orderByChild("email_address").equalTo(mAuth.getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                 @Override
+                                 public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                     for (DataSnapshot single_value : dataSnapshot.getChildren()) {
+                                         String registration_number = single_value.child("").getKey();
+                                         Log.i("custom1", registration_number);
+
+                                         String unique_id = user_database.child(registration_number).child("components_issued").push().getKey();
+                                         Log.i("custom2", unique_id);
+
+                                         user_database.child(registration_number).child(unique_id).setValue(item_id);
+                                     }
+                                 }
+
+                                 @Override
+                                 public void onCancelled(DatabaseError databaseError) {
+
+                                 }
+                             });
 
                              // Closure message
                              Toast.makeText(getApplicationContext(), "The item has been issued!", Toast.LENGTH_SHORT).show();
@@ -375,7 +409,18 @@ public class MainActivity extends AppCompatActivity {
                  });
             }
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            SharedPreferences store_content = getApplicationContext().getSharedPreferences("system_data", 0);
+            Editor editor = store_content.edit();
+
+            if (store_content.getInt("type_operation", -1) == 0) {
+                Intent temp = new Intent(this, MainActivity.class);
+                editor.remove("type_operation").apply();
+
+                startActivity(temp);
+                finishAffinity();
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
     //endregion
@@ -395,27 +440,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     //endregion
-
-    //region Code for handling the list of issued items to the user
-    public void getIssuedItems(){
-        component_database = FirebaseDatabase.getInstance().getReference().child("inventory_details");
-
-        // Connect to the database and create an event
-        component_database.orderByChild("CurrentIssue").equalTo(user_email).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot single_value: dataSnapshot.getChildren()) {
-                    Log.i("custom",single_value.child("").getKey());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-    //endregion
-
-
 }

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.util.Log.i;
-
 public class DashboardFragment extends Fragment {
 
     private DatabaseReference component_database;
@@ -34,7 +31,7 @@ public class DashboardFragment extends Fragment {
     FirebaseAuth mAuth;
 
     private IssueItemAdpater adapter;
-    private List<issued_item> issued_items;
+    public List<issued_item> issued_items;
     private RecyclerView card_recycler_view;
 
     private ProgressDialog progressDialog;
@@ -85,33 +82,8 @@ public class DashboardFragment extends Fragment {
         card_recycler_view.setAdapter(adapter);
 
         getIssuedItems();
-
         return page_view;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
@@ -130,9 +102,11 @@ public class DashboardFragment extends Fragment {
         progressDialog.show();
 
         // Connect to the database and create an event
-        component_database.orderByChild("CurrentIssue").equalTo(user_email).addListenerForSingleValueEvent(new ValueEventListener() {
+        component_database.orderByChild("CurrentIssue").equalTo(user_email).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                issued_items.clear();
+
                 for (DataSnapshot single_value: dataSnapshot.getChildren()) {
                     String component_name = single_value.child("").child("Name").getValue().toString().toUpperCase();
                     String issued_date = "Issue date: " + single_value.child("").child("IssueDate").getValue().toString();
