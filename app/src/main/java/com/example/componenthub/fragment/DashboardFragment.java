@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.componenthub.R;
 import com.example.componenthub.other.IssueItemAdpater;
@@ -33,6 +34,7 @@ public class DashboardFragment extends Fragment {
     private IssueItemAdpater adapter;
     public List<issued_item> issued_items;
     private RecyclerView card_recycler_view;
+    private TextView empty_rv_message;
 
     private ProgressDialog progressDialog;
 
@@ -76,6 +78,8 @@ public class DashboardFragment extends Fragment {
         issued_items = new ArrayList<>();
         adapter = new IssueItemAdpater(getContext(), issued_items);
 
+        empty_rv_message = (TextView) page_view.findViewById(R.id.empty_dashboard);
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         card_recycler_view.setLayoutManager(mLayoutManager);
         card_recycler_view.setItemAnimator(new DefaultItemAnimator());
@@ -115,6 +119,12 @@ public class DashboardFragment extends Fragment {
 
                     issued_item row_item = new issued_item(component_name, issued_date, return_date, component_code);
                     issued_items.add(row_item);
+                }
+
+                if (issued_items.isEmpty()) {
+                    empty_rv_message.setVisibility(View.VISIBLE);
+                } else {
+                    empty_rv_message.setVisibility(View.INVISIBLE);
                 }
 
                 adapter.notifyDataSetChanged();

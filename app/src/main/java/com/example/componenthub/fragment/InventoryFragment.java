@@ -1,24 +1,28 @@
 package com.example.componenthub.fragment;
 
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.componenthub.R;
+import com.example.componenthub.other.InventoryItemAdapter;
+import com.example.componenthub.other.inventory_item;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link InventoryFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link InventoryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class InventoryFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,21 +33,17 @@ public class InventoryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    public List<inventory_item> inventory_items;
+    private DatabaseReference component_database;
+    private InventoryItemAdapter adapter;
+    private RecyclerView card_recycler_view;
+
     private OnFragmentInteractionListener mListener;
 
     public InventoryFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment InventoryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static InventoryFragment newInstance(String param1, String param2) {
         InventoryFragment fragment = new InventoryFragment();
         Bundle args = new Bundle();
@@ -68,6 +68,17 @@ public class InventoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View page_view =  inflater.inflate(R.layout.fragment_inventory, container, false);
 
+        card_recycler_view = (RecyclerView) page_view.findViewById(R.id.rv_inventory_list);
+        inventory_items = new ArrayList<>();
+        adapter = new InventoryItemAdapter(getContext(), inventory_items);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        card_recycler_view.setLayoutManager(mLayoutManager);
+        card_recycler_view.setItemAnimator(new DefaultItemAnimator());
+        card_recycler_view.setAdapter(adapter);
+
+        getInventory();
+
         return page_view;
     }
 
@@ -78,16 +89,54 @@ public class InventoryFragment extends Fragment {
         }
     }
 
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
+    //region Code for handling the list of inventory items
+    public void getInventory() {
+        component_database = FirebaseDatabase.getInstance().getReference().child("inventory_details");
+
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Stocking up inventory...");
+        progressDialog.setCanceledOnTouchOutside(false);
+
+        progressDialog.show();
+
+        // Connect to the database and create an event
+        component_database.orderByChild("Name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                inventory_items.clear();
+                String component_name = "", updated_component_name;
+                int total_count = 0;
+
+                for (DataSnapshot single_value : dataSnapshot.getChildren()) {
+                    updated_component_name = single_value.child("Name").getValue().toString().toUpperCase();
+
+                    if (component_name.isEmpty()) {
+                        component_name = updated_component_name;
+                        total_count = 1;
+
+                    } else if (!component_name.equals(updated_component_name)) {
+                        inventory_item row_item = new inventory_item("", component_name, "" + total_count);
+                        inventory_items.add(row_item);
+
+                        component_name = updated_component_name;
+                        total_count = 1;
+                    } else {
+                        total_count += 1;
+                    }
+                }
+
+                adapter.notifyDataSetChanged();
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //endregion
 
     @Override
     public void onDetach() {
@@ -95,16 +144,6 @@ public class InventoryFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

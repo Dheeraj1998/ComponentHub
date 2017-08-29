@@ -13,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -289,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    //region Code for handling the QR code scanner
+    //region Code for handling the QR code scanner (Issuing & Return of the items)
     @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         final Button scan_button = (Button) findViewById(R.id.btn_start_scan);
@@ -311,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
                     // Getting the reference for the item in database
                     component_database = FirebaseDatabase.getInstance().getReference().child("inventory_details").child(store_content.getString("item_id", null));
 
+                    component_database.child("LastIssue").setValue(mAuth.getCurrentUser().getEmail());
                     component_database.child("CurrentIssue").setValue("NA");
                     component_database.child("IssueDate").setValue("NA");
                     component_database.child("Renewal").setValue("NA");
@@ -369,12 +369,9 @@ public class MainActivity extends AppCompatActivity {
 
                                      for (DataSnapshot single_value : dataSnapshot.getChildren()) {
                                          String registration_number = single_value.child("").getKey();
-                                         Log.i("custom1", registration_number);
-
                                          String unique_id = user_database.child(registration_number).child("components_issued").push().getKey();
-                                         Log.i("custom2", unique_id);
 
-                                         user_database.child(registration_number).child(unique_id).setValue(item_id);
+                                         user_database.child(registration_number).child("components_issued").child(unique_id).setValue(item_id);
                                      }
                                  }
 

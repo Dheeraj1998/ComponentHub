@@ -37,7 +37,6 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
     private DatabaseReference component_database;
     private int reIssueLength = 14;
     private String item_id, modified_date;
-    private int validate_return = 0;
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tv_component_name, tv_issue_date, tv_return_date, btn_renew, btn_return;
