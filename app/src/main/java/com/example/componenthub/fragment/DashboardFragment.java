@@ -27,20 +27,16 @@ import java.util.List;
 
 public class DashboardFragment extends Fragment {
 
-    private DatabaseReference component_database;
-    private String user_email;
-    FirebaseAuth mAuth;
-
-    private IssueItemAdpater adapter;
-    public List<issued_item> issued_items;
-    private RecyclerView card_recycler_view;
-    private TextView empty_rv_message;
-
-    private ProgressDialog progressDialog;
-
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    public List<issued_item> issued_items;
+    FirebaseAuth mAuth;
+    private DatabaseReference component_database;
+    private String user_email;
+    private IssueItemAdpater adapter;
+    private RecyclerView card_recycler_view;
+    private TextView empty_rv_message;
+    private ProgressDialog progressDialog;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -89,13 +85,8 @@ public class DashboardFragment extends Fragment {
         return page_view;
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     //region Code for handling the list of issued items to the user
-    public void getIssuedItems(){
+    public void getIssuedItems() {
         component_database = FirebaseDatabase.getInstance().getReference().child("inventory_details");
 
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
@@ -111,7 +102,7 @@ public class DashboardFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 issued_items.clear();
 
-                for (DataSnapshot single_value: dataSnapshot.getChildren()) {
+                for (DataSnapshot single_value : dataSnapshot.getChildren()) {
                     String component_name = single_value.child("").child("Name").getValue().toString().toUpperCase();
                     String issued_date = "Issue date: " + single_value.child("").child("IssueDate").getValue().toString();
                     String return_date = "Return date: " + single_value.child("").child("Renewal").getValue().toString();
@@ -136,6 +127,11 @@ public class DashboardFragment extends Fragment {
 
             }
         });
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
     //endregion
 }

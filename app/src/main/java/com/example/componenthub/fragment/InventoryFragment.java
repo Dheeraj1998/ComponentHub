@@ -28,12 +28,10 @@ public class InventoryFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    public List<inventory_item> inventory_items;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    public List<inventory_item> inventory_items;
     private DatabaseReference component_database;
     private InventoryItemAdapter adapter;
     private RecyclerView card_recycler_view;
@@ -66,7 +64,7 @@ public class InventoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View page_view =  inflater.inflate(R.layout.fragment_inventory, container, false);
+        View page_view = inflater.inflate(R.layout.fragment_inventory, container, false);
 
         card_recycler_view = (RecyclerView) page_view.findViewById(R.id.rv_inventory_list);
         inventory_items = new ArrayList<>();

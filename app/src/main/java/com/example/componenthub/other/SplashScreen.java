@@ -1,12 +1,12 @@
 package com.example.componenthub.other;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import com.example.componenthub.activity.MainActivity;
 import com.example.componenthub.activity.LoginActivity;
+import com.example.componenthub.activity.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

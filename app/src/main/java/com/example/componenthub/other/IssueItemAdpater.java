@@ -31,12 +31,38 @@ import java.util.List;
 
 public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyViewHolder> {
 
+    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
     private Context mContext;
     private List<issued_item> issued_items;
-    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
     private DatabaseReference component_database;
     private int reIssueLength = 14;
     private String item_id, modified_date;
+
+    public IssueItemAdpater(Context mContext, List<issued_item> issued_items) {
+        this.mContext = mContext;
+        this.issued_items = issued_items;
+    }
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.card_issued_item, parent, false);
+
+        return new MyViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
+        issued_item item_list = issued_items.get(position);
+        holder.tv_component_name.setText(item_list.getComponent_name());
+        holder.tv_issue_date.setText(item_list.getIssued_date());
+        holder.tv_return_date.setText(item_list.getReturn_date());
+    }
+
+    @Override
+    public int getItemCount() {
+        return issued_items.size();
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tv_component_name, tv_issue_date, tv_return_date, btn_renew, btn_return;
@@ -108,31 +134,5 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
             }
         }
         //endregion
-    }
-
-    public IssueItemAdpater(Context mContext, List<issued_item> issued_items) {
-        this.mContext = mContext;
-        this.issued_items = issued_items;
-    }
-
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_issued_item, parent, false);
-
-        return new MyViewHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
-        issued_item item_list = issued_items.get(position);
-        holder.tv_component_name.setText(item_list.getComponent_name());
-        holder.tv_issue_date.setText(item_list.getIssued_date());
-        holder.tv_return_date.setText(item_list.getReturn_date());
-    }
-
-    @Override
-    public int getItemCount() {
-        return issued_items.size();
     }
 }

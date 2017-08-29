@@ -1,6 +1,5 @@
 package com.example.componenthub.fragment;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.componenthub.R;
-import com.google.firebase.database.DatabaseReference;
-import com.google.zxing.integration.android.IntentIntegrator;
 
 public class ReportFragment extends Fragment {
     private OnFragmentInteractionListener mListener;

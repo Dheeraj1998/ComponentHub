@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <android.support.v7.widget.CardView
         android:id="@+id/card_issued_item"
         android:layout_width="match_parent"
@@ -27,31 +27,31 @@
 
             <TextView
                 android:id="@+id/card_component_name"
-                android:layout_toEndOf="@id/card_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/card_picture"
                 android:textColor="@color/textColor"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                tool:text="ARDUINO UNO"/>
+                tool:text="ARDUINO UNO" />
 
             <TextView
                 android:id="@+id/card_issued_date"
-                android:layout_marginTop="@dimen/cardview_default_radius"
-                android:layout_below="@id/card_component_name"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
                 android:layout_height="wrap_content"
-                tool:text="Issued date: 01-01-2017"/>
+                android:layout_below="@id/card_component_name"
+                android:layout_marginTop="@dimen/cardview_default_radius"
+                android:textSize="18sp"
+                tool:text="Issued date: 01-01-2017" />
 
             <TextView
                 android:id="@+id/card_return_date"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/card_issued_date"
                 android:layout_marginTop="@dimen/cardview_default_radius"
                 android:textSize="18sp"
-                android:layout_height="wrap_content"
-                tool:text="Return date: 01-01-2018"/>
+                tool:text="Return date: 01-01-2018" />
 
             <TextView
                 android:id="@+id/card_renew"
@@ -59,24 +59,24 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/card_return_date"
                 android:layout_marginStart="5dp"
-                    android:textColor="@color/textColor"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:background="@android:color/holo_orange_dark"
                 android:padding="10dp"
-                android:text="RENEW ITEM" />
+                android:text="RENEW ITEM"
+                android:textColor="@color/textColor" />
 
             <TextView
                 android:id="@+id/card_return"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/card_return_date"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/textColor"
                 android:layout_marginEnd="5dp"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@android:color/holo_blue_dark"
                 android:padding="10dp"
-                    android:background="@android:color/holo_blue_dark"
-                android:text="RETURN ITEM" />
+                android:text="RETURN ITEM"
+                android:textColor="@color/textColor" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

@@ -40,32 +40,27 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int QR_length = 8;
-    private int max_IssueDays = 14;
-    private DatabaseReference component_database;
-    private DatabaseReference user_database;
-    private String issueDate;
-    private String returnDate;
-    FirebaseAuth mAuth;
-    private String user_email;
-
-    // Initialising global variables
-    private Toolbar toolbar;
-
-    private String[] activityTitles;
-    private NavigationView navigationView;
-    private DrawerLayout drawer;
-
     // tags used to attach the fragments
     private static final String TAG_HOME = "home";
     private static final String TAG_PHOTOS = "photos";
     private static final String TAG_MOVIES = "movies";
     private static final String TAG_NOTIFICATIONS = "notifications";
     public static String CURRENT_TAG = TAG_HOME;
-
     // index to identify current nav menu item
     public static int navItemIndex = 0;
-
+    FirebaseAuth mAuth;
+    private int QR_length = 8;
+    private int max_IssueDays = 14;
+    private DatabaseReference component_database;
+    private DatabaseReference user_database;
+    private String issueDate;
+    private String returnDate;
+    private String user_email;
+    // Initialising global variables
+    private Toolbar toolbar;
+    private String[] activityTitles;
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
@@ -127,11 +122,9 @@ public class MainActivity extends AppCompatActivity {
                 // update the main content by replacing fragments
                 Fragment fragment = getHomeFragment();
 
-                if(fragment == null){
+                if (fragment == null) {
                     beginLogout();
-                }
-
-                else {
+                } else {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
                             android.R.anim.fade_out);
@@ -222,12 +215,10 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 0;
                 }
 
-                if(log_out == 1){
+                if (log_out == 1) {
                     beginLogout();
                     return false;
-                }
-
-                else {
+                } else {
                     //Checking if the item is in checked state or not, if not make it in checked state
                     if (menuItem.isChecked()) {
                         menuItem.setChecked(false);
@@ -349,61 +340,57 @@ public class MainActivity extends AppCompatActivity {
                 user_database = FirebaseDatabase.getInstance().getReference().child("user_profiles");
 
                 // Connect to the database and create an event
-                 component_database.addListenerForSingleValueEvent(new ValueEventListener() {
-                     @Override
-                     public void onDataChange(DataSnapshot dataSnapshot) {
-                         if(dataSnapshot.child("IssueDate").getValue() == null){
-                             Toast.makeText(getApplicationContext(), "Not a valid QR code.", Toast.LENGTH_SHORT).show();
-                         }
+                component_database.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.child("IssueDate").getValue() == null) {
+                            Toast.makeText(getApplicationContext(), "Not a valid QR code.", Toast.LENGTH_SHORT).show();
+                        } else if (dataSnapshot.child("IssueDate").getValue().toString().equals("NA")) {
+                            // Sets the issue/return date
+                            component_database.child("CurrentIssue").setValue(user_email);
+                            component_database.child("IssueDate").setValue(issueDate);
+                            component_database.child("Renewal").setValue(returnDate);
 
-                         else if(dataSnapshot.child("IssueDate").getValue().toString().equals("NA")){
-                             // Sets the issue/return date
-                             component_database.child("CurrentIssue").setValue(user_email);
-                             component_database.child("IssueDate").setValue(issueDate);
-                             component_database.child("Renewal").setValue(returnDate);
+                            // Stores the values in the issuer's database
+                            user_database.orderByChild("email_address").equalTo(mAuth.getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                             // Stores the values in the issuer's database
-                             user_database.orderByChild("email_address").equalTo(mAuth.getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                 @Override
-                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot single_value : dataSnapshot.getChildren()) {
+                                        String registration_number = single_value.child("").getKey();
+                                        String unique_id = user_database.child(registration_number).child("components_issued").push().getKey();
 
-                                     for (DataSnapshot single_value : dataSnapshot.getChildren()) {
-                                         String registration_number = single_value.child("").getKey();
-                                         String unique_id = user_database.child(registration_number).child("components_issued").push().getKey();
+                                        user_database.child(registration_number).child("components_issued").child(unique_id).setValue(item_id);
+                                    }
+                                }
 
-                                         user_database.child(registration_number).child("components_issued").child(unique_id).setValue(item_id);
-                                     }
-                                 }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                                 @Override
-                                 public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
 
-                                 }
-                             });
+                            // Closure message
+                            Toast.makeText(getApplicationContext(), "The item has been issued!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Item already issued
+                            Toast.makeText(getApplicationContext(), "Sorry, the item is already issued!", Toast.LENGTH_SHORT).show();
+                        }
 
-                             // Closure message
-                             Toast.makeText(getApplicationContext(), "The item has been issued!", Toast.LENGTH_SHORT).show();
-                         }
+                        // Closing the Progress bar
+                        scan_button.setVisibility(View.VISIBLE);
+                        scan_progress.setVisibility(View.INVISIBLE);
+                    }
 
-                         else{
-                             // Item already issued
-                             Toast.makeText(getApplicationContext(), "Sorry, the item is already issued!", Toast.LENGTH_SHORT).show();
-                         }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Closing the Progress bar
+                        scan_button.setVisibility(View.VISIBLE);
+                        scan_progress.setVisibility(View.INVISIBLE);
 
-                         // Closing the Progress bar
-                         scan_button.setVisibility(View.VISIBLE);
-                         scan_progress.setVisibility(View.INVISIBLE);
-                     }
-
-                     @Override
-                     public void onCancelled(DatabaseError databaseError) {
-                         // Closing the Progress bar
-                         scan_button.setVisibility(View.VISIBLE);
-                         scan_progress.setVisibility(View.INVISIBLE);
-
-                         Toast.makeText(getApplicationContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
-                     }
-                 });
+                        Toast.makeText(getApplicationContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         } else {
             SharedPreferences store_content = getApplicationContext().getSharedPreferences("system_data", 0);

@@ -2,9 +2,9 @@ package com.example.componenthub.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,12 +50,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void beginLogin(View v){
+    public void beginLogin(View v) {
         // Getting all the inputs and trimming them
         email = log_email.getText().toString();
         password = log_password.getText().toString();
 
-        if(check_validity()){
+        if (check_validity()) {
             lgn_button.setEnabled(false);
 
             final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -90,26 +90,26 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void openRegister(View v){
+    public void openRegister(View v) {
         Intent temp = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(temp);
     }
 
     //region Function to check the validity of the inputs
-    public boolean check_validity(){
+    public boolean check_validity() {
         boolean result = true;
 
         // Check if any of the fields are empty
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             log_email.setError("This field cannot be empty.");
             result = false;
         }
 
-        if(password.isEmpty()){
+        if (password.isEmpty()) {
             log_password.setError("This field cannot be empty.");
             result = false;
         }
-        if(!email.endsWith("@vit.ac.in")){
+        if (!email.endsWith("@vit.ac.in")) {
             log_email.setError("Enter your VIT email id.");
             result = false;
         }

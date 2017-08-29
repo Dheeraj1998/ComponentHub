@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:padding="15dp"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
+    android:padding="15dp"
     tools:context="com.example.componenthub.activity.LoginActivity">
 
     <android.support.design.widget.TextInputLayout
@@ -60,19 +60,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:backgroundTint="@android:color/holo_green_dark"
         android:onClick="openRegister"
         android:padding="12dp"
         android:text="Register"
-        android:backgroundTint="@android:color/holo_green_dark"
         android:textColor="@android:color/white" />
 
     <TextView
-        android:onClick="forgotPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
+        android:onClick="forgotPassword"
         android:text="Forgot your password?"
-        android:textSize="16sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    
+        android:textSize="16sp" />
+
 </LinearLayout>

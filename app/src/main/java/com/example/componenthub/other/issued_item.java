@@ -10,7 +10,7 @@ public class issued_item {
     private String return_date;
     private String component_code;
 
-    public issued_item(){
+    public issued_item() {
 
     }
 
@@ -20,6 +20,7 @@ public class issued_item {
         this.return_date = return_date;
         this.component_code = component_code;
     }
+
     public String getComponent_name() {
         return component_name;
     }

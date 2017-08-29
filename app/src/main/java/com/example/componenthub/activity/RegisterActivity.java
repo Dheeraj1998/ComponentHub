@@ -2,10 +2,9 @@ package com.example.componenthub.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,13 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.w3c.dom.Text;
-
 import java.util.regex.Pattern;
-
-import static com.example.componenthub.R.id.reg_email;
-import static com.example.componenthub.R.id.reg_name;
-import static com.example.componenthub.R.id.reg_password;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -46,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public void beginRegister(View view){
+    public void beginRegister(View view) {
         // Getting all the inputs and trimming them
         reg_regisnumber = (EditText) findViewById(R.id.reg_regino);
         reg_name = (EditText) findViewById(R.id.reg_name);
@@ -63,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         registration_number = reg_regisnumber.getText().toString().trim().toUpperCase();
         mobile_no = reg_mobile.getText().toString().trim();
 
-        if(check_validity()){
+        if (check_validity()) {
             // Disable the 'Register' button
             reg_button.setEnabled(false);
 
@@ -116,47 +109,47 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     //region Function to check the validity of the inputs
-    public boolean check_validity(){
+    public boolean check_validity() {
         boolean result = true;
 
         // Check if any of the fields are empty
-        if(name.isEmpty()){
+        if (name.isEmpty()) {
             reg_name.setError("This field cannot be empty.");
             result = false;
         }
 
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             reg_email.setError("This field cannot be empty.");
             result = false;
         }
 
-        if(registration_number.isEmpty()){
+        if (registration_number.isEmpty()) {
             reg_regisnumber.setError("This field cannot be empty.");
             result = false;
         }
 
-        if(mobile_no.isEmpty()){
+        if (mobile_no.isEmpty()) {
             reg_mobile.setError("This field cannot be empty.");
             result = false;
         }
 
-        if(password.isEmpty()){
+        if (password.isEmpty()) {
             reg_password.setError("This field cannot be empty.");
             result = false;
         }
 
-        if(!email.endsWith("@vit.ac.in")){
+        if (!email.endsWith("@vit.ac.in")) {
             reg_email.setError("Enter your VIT email ids.");
             result = false;
         }
 
-        if(!(mobile_no.length() == 10)){
+        if (!(mobile_no.length() == 10)) {
             reg_mobile.setError("This number is not valid.");
             result = false;
         }
 
-         Pattern reg_pattern = Pattern.compile("^[0-9]{2}[A-Z]{3}[0-9]{4}$");
-        if(registration_number.length() != 9 || !(reg_pattern.matcher(registration_number).matches())){
+        Pattern reg_pattern = Pattern.compile("^[0-9]{2}[A-Z]{3}[0-9]{4}$");
+        if (registration_number.length() != 9 || !(reg_pattern.matcher(registration_number).matches())) {
             reg_regisnumber.setError("The registration number is not valid.");
             result = false;
         }
