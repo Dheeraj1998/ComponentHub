@@ -4,6 +4,7 @@
 
     <!-- Custom Strings -->
     <string name="generic_error_message">Sorry! There was some error, please try again later.</string>
+    <string name="issue_list_help">Select an issue from below:</string>
 
     <!-- Navigation Drawer menu labels -->
     <string name="nav_dashboard">Dashboard</string>
@@ -26,6 +27,9 @@
         <item>Sign Out</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="issue_list">
+        <item>Not Working</item>
+        <item>Damaged</item>
+        <item>Broken</item>
+    </string-array>
 </resources>

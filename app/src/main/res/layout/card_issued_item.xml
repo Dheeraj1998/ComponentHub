@@ -34,7 +34,7 @@
                 android:textSize="22sp"
                 android:textStyle="bold"
                 tool:text="ARDUINO UNO" />
-
+            
             <TextView
                 android:id="@+id/card_issued_date"
                 android:layout_width="match_parent"

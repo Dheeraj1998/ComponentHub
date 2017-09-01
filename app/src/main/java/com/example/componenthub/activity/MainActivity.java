@@ -1,5 +1,6 @@
 package com.example.componenthub.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -13,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -40,12 +42,13 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    // tags used to attach the fragments
+    // Tags used to attach the fragments
     private static final String TAG_HOME = "home";
     private static final String TAG_PHOTOS = "photos";
     private static final String TAG_MOVIES = "movies";
     private static final String TAG_NOTIFICATIONS = "notifications";
     public static String CURRENT_TAG = TAG_HOME;
+
     // index to identify current nav menu item
     public static int navItemIndex = 0;
     FirebaseAuth mAuth;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private String issueDate;
     private String returnDate;
     private String user_email;
+
     // Initialising global variables
     private Toolbar toolbar;
     private String[] activityTitles;
@@ -233,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
 
             @Override
@@ -283,7 +286,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         final Button scan_button = (Button) findViewById(R.id.btn_start_scan);
-        final ProgressBar scan_progress = (ProgressBar) findViewById(R.id.prb_scan);
+        final ProgressDialog scan_progress = new ProgressDialog(this);
+        scan_progress.setIndeterminate(true);
+        scan_progress.setMessage("Please wait...");
+        scan_progress.setCanceledOnTouchOutside(false);
+
+        scan_progress.show();
 
         // Generate the dynamic security code for QR generation
         generate_SC generated_sc = new generate_SC();
@@ -306,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
                     component_database.child("IssueDate").setValue("NA");
                     component_database.child("Renewal").setValue("NA");
 
+                    scan_progress.dismiss();
                     Toast.makeText(getApplicationContext(), "The item has been successfully returned.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "This is not a valid return code.", Toast.LENGTH_SHORT).show();
@@ -319,10 +328,6 @@ public class MainActivity extends AppCompatActivity {
 
             // Function to handle correct QR codes
             else {
-                // Setting up the Progress bar
-                scan_button.setVisibility(View.INVISIBLE);
-                scan_progress.setVisibility(View.VISIBLE);
-
                 // Get the current date from the system
                 Calendar c = Calendar.getInstance();
 
@@ -370,23 +375,26 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
 
+                            scan_progress.dismiss();
+
                             // Closure message
                             Toast.makeText(getApplicationContext(), "The item has been issued!", Toast.LENGTH_SHORT).show();
                         } else {
+                            scan_progress.dismiss();
+
                             // Item already issued
                             Toast.makeText(getApplicationContext(), "Sorry, the item is already issued!", Toast.LENGTH_SHORT).show();
                         }
 
                         // Closing the Progress bar
                         scan_button.setVisibility(View.VISIBLE);
-                        scan_progress.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         // Closing the Progress bar
                         scan_button.setVisibility(View.VISIBLE);
-                        scan_progress.setVisibility(View.INVISIBLE);
+                        scan_progress.dismiss();
 
                         Toast.makeText(getApplicationContext(), R.string.generic_error_message, Toast.LENGTH_SHORT).show();
                     }
@@ -395,6 +403,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             SharedPreferences store_content = getApplicationContext().getSharedPreferences("system_data", 0);
             Editor editor = store_content.edit();
+            scan_progress.dismiss();
 
             if (store_content.getInt("type_operation", -1) == 0) {
                 Intent temp = new Intent(this, MainActivity.class);

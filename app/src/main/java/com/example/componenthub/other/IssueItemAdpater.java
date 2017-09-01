@@ -2,17 +2,23 @@ package com.example.componenthub.other;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.componenthub.R;
+import com.example.componenthub.activity.ReportActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +43,7 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
     private DatabaseReference component_database;
     private int reIssueLength = 14;
     private String item_id, modified_date;
+    private CardView cardView;
 
     public IssueItemAdpater(Context mContext, List<issued_item> issued_items) {
         this.mContext = mContext;
@@ -64,12 +71,14 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
         return issued_items.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
         public TextView tv_component_name, tv_issue_date, tv_return_date, btn_renew, btn_return;
         public ImageView thumbnail;
 
         public MyViewHolder(View view) {
             super(view);
+
+            cardView = (CardView) view.findViewById(R.id.card_issued_item);
 
             tv_component_name = (TextView) view.findViewById(R.id.card_component_name);
             tv_issue_date = (TextView) view.findViewById(R.id.card_issued_date);
@@ -80,6 +89,7 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
 
             thumbnail = (ImageView) view.findViewById(R.id.card_picture);
 
+            view.setOnClickListener(this);
             btn_return.setOnClickListener(this);
             btn_renew.setOnClickListener(this);
         }
@@ -132,7 +142,37 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
                 IntentIntegrator QRScan = new IntentIntegrator((Activity) view.getContext());
                 QRScan.initiateScan();
             }
+
+            // Code for the reporting of components
+            else {
+                item_id = issued_items.get(getAdapterPosition()).getComponent_code();
+                final View final_view = view;
+
+                AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
+                alertbox.setMessage("Do you want to issue a report about this component?");
+                alertbox.setTitle("Send Report");
+
+                alertbox.setPositiveButton("YES",
+                        new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                Intent temp = new Intent(final_view.getContext(), ReportActivity.class);
+                                temp.putExtra("item_id", item_id);
+                                final_view.getContext().startActivity(temp);
+                            }
+                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+
+                            }
+
+                        });
+                
+                alertbox.show();
+
+            }
+
         }
         //endregion
     }
 }
+

@@ -10,6 +10,7 @@
 
         <Button
             android:id="@+id/btn_start_scan"
+            android:textColor="@android:color/white"
             style="@style/Base.TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
