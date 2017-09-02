@@ -7,4 +7,5 @@
     <color name="navHeader">#8BC34A</color>
     <color name="backgroundColor">#CFD8DC</color>
     <color name="textHintColor">#CFCFCF</color>
+    <color name="splashBackgroundColor">#FFFFFF</color>
 </resources>
