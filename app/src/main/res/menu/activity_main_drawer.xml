@@ -17,11 +17,6 @@
             android:title="@string/nav_issue" />
 
         <item
-            android:id="@+id/nav_report"
-            android:icon="@drawable/ic_report_black_24dp"
-            android:title="@string/nav_report" />
-
-        <item
             android:id="@+id/nav_signout"
             android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="@string/nav_signout" />

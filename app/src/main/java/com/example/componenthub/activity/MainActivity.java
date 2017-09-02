@@ -14,18 +14,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.componenthub.R;
 import com.example.componenthub.fragment.DashboardFragment;
 import com.example.componenthub.fragment.InventoryFragment;
 import com.example.componenthub.fragment.IssueFragment;
-import com.example.componenthub.fragment.ReportFragment;
 import com.example.componenthub.other.SplashScreen;
 import com.example.componenthub.other.generate_SC;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_HOME = "home";
     private static final String TAG_PHOTOS = "photos";
     private static final String TAG_MOVIES = "movies";
-    private static final String TAG_NOTIFICATIONS = "notifications";
     public static String CURRENT_TAG = TAG_HOME;
 
     // index to identify current nav menu item
@@ -165,10 +161,6 @@ public class MainActivity extends AppCompatActivity {
                 // movies fragment
                 IssueFragment moviesFragment = new IssueFragment();
                 return moviesFragment;
-            case 3:
-                // notifications fragment
-                ReportFragment notificationsFragment = new ReportFragment();
-                return notificationsFragment;
             default:
                 return new DashboardFragment();
         }
@@ -207,10 +199,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_issue:
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_MOVIES;
-                        break;
-                    case R.id.nav_report:
-                        navItemIndex = 3;
-                        CURRENT_TAG = TAG_NOTIFICATIONS;
                         break;
                     case R.id.nav_signout:
                         log_out = 1;

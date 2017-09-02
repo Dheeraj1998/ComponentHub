@@ -166,7 +166,7 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
                             }
 
                         });
-                
+
                 alertbox.show();
 
             }

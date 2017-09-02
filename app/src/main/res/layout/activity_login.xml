@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:textColorHint="@color/textHintColor"
         android:layout_marginTop="8dp">
 
         <EditText
@@ -28,6 +29,7 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
+        android:textColorHint="@color/textHintColor"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp">
@@ -71,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:onClick="forgotPassword"
+        android:textColor="@color/textHintColor"
         android:text="Forgot your password?"
         android:textSize="16sp" />
 
