@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background_image"
     android:orientation="vertical"
     android:padding="15dp"
@@ -17,77 +16,78 @@
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="25sp"
+        android:layout_marginBottom="20dp"
         android:textStyle="bold" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:textColorHint="@color/textHintColor"
-        android:layout_marginTop="8dp">
 
-        <EditText
-            android:id="@+id/log_email"
-            android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/log_email"
+        android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:hint="Email Address"
+        android:layout_margin="8dp"
+        android:background="@color/backgroundColor"
+        android:drawablePadding="5dp"
             android:inputType="textEmailAddress"
+        android:drawableStart="@drawable/ic_person_black_24dp"
             android:maxLines="1"
-            android:textColor="@android:color/white" />
+        android:padding="10dp" />
 
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:textColorHint="@color/textHintColor"
-        android:layout_height="wrap_content"
-        app:passwordToggleEnabled="true"
-        app:passwordToggleTint="@color/passwordToggleColor"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp">
 
         <EditText
             android:id="@+id/log_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_margin="8dp"
             android:hint="Password"
+            android:background="@color/backgroundColor"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_lock_black_24dp"
             android:inputType="textPassword"
             android:maxLines="1"
-            android:textColor="@android:color/white" />
-
-    </android.support.design.widget.TextInputLayout>
+            android:padding="10dp" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_login"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:backgroundTint="@color/colorAccent"
+        android:backgroundTint="#27ae60"
         android:onClick="beginLogin"
         android:padding="12dp"
         android:text="Login"
         android:textColor="@android:color/white" />
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_signup"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="@android:color/holo_green_dark"
-        android:onClick="openRegister"
-        android:padding="12dp"
-        android:text="Register"
-        android:textColor="@android:color/white" />
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:textColor="@color/textHintColor"
-        android:text="Forgot your password?"
-        android:textSize="16sp" />
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="openRegister"
+            android:padding="5dp"
+            android:text="Register"
+            android:textColor="@color/textHintColor"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Forgot your password?"
+            android:textColor="@color/textHintColor"
+            android:textSize="16sp" />
+    </LinearLayout>
 </LinearLayout>
