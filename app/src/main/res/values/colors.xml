@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#673AB7</color>
-    <color name="colorPrimaryDark">#512DA8</color>
-    <color name="colorAccent">#FF5722</color>
+    <color name="colorPrimary">#1a237e</color>
+    <color name="colorPrimaryDark">#000051</color>
+    <color name="colorAccent">#e64a19</color>
     <color name="textColor">#000000</color>
     <color name="navHeader">#8BC34A</color>
     <color name="backgroundColor">#CFD8DC</color>
-    <color name="textHintColor">#CFCFCF</color>
+    <color name="textHintColor">#BFBFBF</color>
     <color name="splashBackgroundColor">#FFFFFF</color>
+    <color name="passwordToggleColor">#ffffbb33</color>
 </resources>

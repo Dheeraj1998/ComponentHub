@@ -1,18 +1,13 @@
 package com.example.componenthub.fragment;
 
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.LoginFilter;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +29,7 @@ import java.util.List;
 public class InventoryFragment extends Fragment {
     public List<inventory_item> inventory_items;
     private EditText search_item;
+    private TextView no_item_text;
 
     private DatabaseReference component_database;
     private InventoryItemAdapter adapter;
@@ -54,6 +50,8 @@ public class InventoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View page_view = inflater.inflate(R.layout.fragment_inventory, container, false);
 
+        no_item_text = (TextView) page_view.findViewById(R.id.no_results_text);
+
         search_item = (EditText) page_view.findViewById(R.id.search_inventory);
         card_recycler_view = (RecyclerView) page_view.findViewById(R.id.rv_inventory_list);
         inventory_items = new ArrayList<>();
@@ -66,6 +64,18 @@ public class InventoryFragment extends Fragment {
         card_recycler_view.setAdapter(adapter);
 
         getInventory();
+
+        //
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                if (adapter.getItemCount() == 0) {
+                    no_item_text.setText("No results found!");
+                } else {
+                    no_item_text.setText("");
+                }
+            }
+        });
 
         // Setting up the listener for the Android keyboard for searching components
         search_item.addTextChangedListener(new TextWatcher() {

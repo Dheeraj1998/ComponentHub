@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.componenthub.R;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
+    private TextView username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
         // initializing navigation menu
         setUpNavigationView();
+
+        setUsername();
 
         if (savedInstanceState == null) {
             navItemIndex = 0;
@@ -290,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
         if (result != null && resultCode == RESULT_OK) {
             final String item_id = result.getContents();
 
-            if (result.getContents().length() == security_code_length) {
+            if (result.getContents().length() == security_code_length && CURRENT_TAG.equals(TAG_HOME)) {
                 if (item_id.equals(security_code)) {
                     SharedPreferences store_content = getApplicationContext().getSharedPreferences("system_data", 0);
 
@@ -305,12 +309,14 @@ public class MainActivity extends AppCompatActivity {
                     scan_progress.dismiss();
                     Toast.makeText(getApplicationContext(), "The item has been successfully returned.", Toast.LENGTH_SHORT).show();
                 } else {
+                    scan_progress.dismiss();
                     Toast.makeText(getApplicationContext(), "This is not a valid return code.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             // Function to handle invalid QR scans
             else if (result.getContents() == null || result.getContents().length() != QR_length) {
+                scan_progress.dismiss();
                 Toast.makeText(this, "No valid QR code was found!", Toast.LENGTH_LONG).show();
             }
 
@@ -337,7 +343,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.child("IssueDate").getValue() == null) {
+                            scan_progress.dismiss();
                             Toast.makeText(getApplicationContext(), "Not a valid QR code.", Toast.LENGTH_SHORT).show();
+
                         } else if (dataSnapshot.child("IssueDate").getValue().toString().equals("NA")) {
                             // Sets the issue/return date
                             component_database.child("CurrentIssue").setValue(user_email);
@@ -419,6 +427,39 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Logout failed. Try again later!", Toast.LENGTH_SHORT).show();
         }
+    }
+    //endregion
+
+    //region Set up the name of the user
+    public void setUsername() {
+        username = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_user_name);
+
+        // Getting the reference for the item in database
+        user_database = FirebaseDatabase.getInstance().getReference().child("user_profiles");
+
+        user_database.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user_database.orderByChild("email_address").equalTo(mAuth.getCurrentUser().getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot single_value : dataSnapshot.getChildren()) {
+                            username.setText(single_value.child("name").getValue().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
     //endregion
 }

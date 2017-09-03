@@ -3,10 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_image"
     android:orientation="vertical"
     android:padding="15dp"
     tools:context="com.example.componenthub.activity.LoginActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:text="@string/underline_app_name"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -31,6 +42,8 @@
         android:layout_width="match_parent"
         android:textColorHint="@color/textHintColor"
         android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/passwordToggleColor"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp">
 

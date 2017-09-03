@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             log_password.setError("This field cannot be empty.");
             result = false;
         }
-        if (!email.endsWith("@vit.ac.in")) {
+        if (!(email.endsWith("@vit.ac.in") || email.endsWith("@vitstudent.ac.in"))) {
             log_email.setError("Enter your VIT email id.");
             result = false;
         }

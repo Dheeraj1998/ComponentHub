@@ -3,10 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_image"
     android:orientation="vertical"
     android:padding="15dp"
     tools:context="com.example.componenthub.activity.RegisterActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:text="@string/underline_app_name"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -19,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@android:color/white"
             android:hint="Registration Number"
             android:inputType="text"
             android:maxLength="10"
@@ -36,6 +48,7 @@
             android:id="@+id/reg_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
             android:layout_gravity="center"
             android:hint="Email"
             android:inputType="textEmailAddress"
@@ -54,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@android:color/white"
             android:hint="Name"
             android:inputType="text"
             android:maxLines="1" />
@@ -73,6 +87,7 @@
             android:layout_gravity="center"
             android:hint="Mobile Number"
             android:inputType="number"
+            android:textColor="@android:color/white"
             android:maxLength="10"
             android:maxLines="1" />
 
@@ -81,6 +96,8 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/passwordToggleColor"
         android:textColorHint="@color/textHintColor"
         android:layout_marginTop="8dp">
 
@@ -91,6 +108,7 @@
             android:layout_gravity="center"
             android:hint="Password"
             android:inputType="textPassword"
+            android:textColor="@android:color/white"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>

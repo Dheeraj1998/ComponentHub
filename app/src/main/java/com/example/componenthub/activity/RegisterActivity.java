@@ -138,7 +138,7 @@ public class RegisterActivity extends AppCompatActivity {
             result = false;
         }
 
-        if (!email.endsWith("@vit.ac.in")) {
+        if (!(email.endsWith("@vit.ac.in") || email.endsWith("@vitstudent.ac.in"))) {
             reg_email.setError("Enter your VIT email ids.");
             result = false;
         }
