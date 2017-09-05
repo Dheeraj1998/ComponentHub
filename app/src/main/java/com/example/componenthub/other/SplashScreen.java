@@ -23,7 +23,7 @@ public class SplashScreen extends AppCompatActivity {
         // Get the current instances
         mAuth = FirebaseAuth.getInstance();
 
-        // Check if the user is already signed in
+        //region Function to check if the user is already signed in
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -42,6 +42,7 @@ public class SplashScreen extends AppCompatActivity {
                 }
             }
         };
+        //endregion
     }
 
     @Override

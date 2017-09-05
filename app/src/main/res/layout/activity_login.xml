@@ -23,14 +23,14 @@
     <EditText
         android:id="@+id/log_email"
         android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email Address"
+        android:layout_height="wrap_content"
+        android:hint="Email Address"
         android:layout_margin="8dp"
         android:background="@color/backgroundColor"
         android:drawablePadding="5dp"
-            android:inputType="textEmailAddress"
+        android:inputType="textEmailAddress"
         android:drawableStart="@drawable/ic_person_black_24dp"
-            android:maxLines="1"
+        android:maxLines="1"
         android:padding="10dp" />
 
 

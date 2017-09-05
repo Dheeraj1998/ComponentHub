@@ -41,10 +41,10 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
 
     // Tags used to attach the fragments
-    private static final String TAG_HOME = "home";
-    private static final String TAG_PHOTOS = "photos";
-    private static final String TAG_MOVIES = "movies";
-    public static String CURRENT_TAG = TAG_HOME;
+    private static final String TAG_DASHBOARD = "dashboard";
+    private static final String TAG_INVENTORY = "inventory";
+    private static final String TAG_ISSUE = "issue";
+    public static String CURRENT_TAG = TAG_DASHBOARD;
 
     // index to identify current nav menu item
     public static int navItemIndex = 0;
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] activityTitles;
     private NavigationView navigationView;
     private DrawerLayout drawer;
+
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             navItemIndex = 0;
-            CURRENT_TAG = TAG_HOME;
+            CURRENT_TAG = TAG_DASHBOARD;
             loadHomeFragment();
         }
     }
@@ -194,15 +195,15 @@ public class MainActivity extends AppCompatActivity {
                     //Replacing the main content with ContentFragment Which is our Inbox View;
                     case R.id.nav_home:
                         navItemIndex = 0;
-                        CURRENT_TAG = TAG_HOME;
+                        CURRENT_TAG = TAG_DASHBOARD;
                         break;
                     case R.id.nav_inventory:
                         navItemIndex = 1;
-                        CURRENT_TAG = TAG_PHOTOS;
+                        CURRENT_TAG = TAG_INVENTORY;
                         break;
                     case R.id.nav_issue:
                         navItemIndex = 2;
-                        CURRENT_TAG = TAG_MOVIES;
+                        CURRENT_TAG = TAG_ISSUE;
                         break;
                     case R.id.nav_signout:
                         log_out = 1;
@@ -265,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
             // rather than home
             if (navItemIndex != 0) {
                 navItemIndex = 0;
-                CURRENT_TAG = TAG_HOME;
+                CURRENT_TAG = TAG_DASHBOARD;
                 loadHomeFragment();
                 return;
             }
@@ -294,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         if (result != null && resultCode == RESULT_OK) {
             final String item_id = result.getContents();
 
-            if (result.getContents().length() == security_code_length && CURRENT_TAG.equals(TAG_HOME)) {
+            if (result.getContents().length() == security_code_length && CURRENT_TAG.equals(TAG_DASHBOARD)) {
                 if (item_id.equals(security_code)) {
                     SharedPreferences store_content = getApplicationContext().getSharedPreferences("system_data", 0);
 
@@ -321,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Function to handle correct QR codes
-            else {
+            else if (CURRENT_TAG.equals(TAG_ISSUE)) {
                 // Get the current date from the system
                 Calendar c = Calendar.getInstance();
 

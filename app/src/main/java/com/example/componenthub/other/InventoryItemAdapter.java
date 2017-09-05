@@ -54,7 +54,7 @@ public class InventoryItemAdapter extends RecyclerView.Adapter<InventoryItemAdap
         return filtered_inventory_items.size();
     }
 
-    // Setting up the filter for the search operations
+    //region Setting up the filter for the search operations
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -88,6 +88,7 @@ public class InventoryItemAdapter extends RecyclerView.Adapter<InventoryItemAdap
             }
         };
     }
+    //endregion
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView lv_component_name, lv_component_number, lv_margin_color;

@@ -14,7 +14,7 @@ public class user_profile {
       /* Blank default constructor essential for Firebase */
     }
 
-    //Getters and setters
+    // Getters and setters
     public String getName() {
         return name;
     }

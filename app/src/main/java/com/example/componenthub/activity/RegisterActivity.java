@@ -39,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
     }
 
+    //region Function to handling the registration of the users
     public void beginRegister(View view) {
         // Getting all the inputs and trimming them
         reg_regisnumber = (EditText) findViewById(R.id.reg_regino);
@@ -107,6 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
             });
         }
     }
+    //endregion
 
     //region Function to check the validity of the inputs
     public boolean check_validity() {

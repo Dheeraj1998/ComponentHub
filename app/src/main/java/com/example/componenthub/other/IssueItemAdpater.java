@@ -94,7 +94,7 @@ public class IssueItemAdpater extends RecyclerView.Adapter<IssueItemAdpater.MyVi
             btn_renew.setOnClickListener(this);
         }
 
-        //region Code for renew/return of the components
+        //region Code for renew/return/report of the components
         @Override
         public void onClick(View view) {
             final View temp_view = view;
