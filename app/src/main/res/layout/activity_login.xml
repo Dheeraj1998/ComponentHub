@@ -11,12 +11,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:padding="@dimen/activity_horizontal_margin"
         android:text="@string/underline_app_name"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="25sp"
-        android:layout_marginBottom="20dp"
         android:textStyle="bold" />
 
 
@@ -24,28 +24,28 @@
         android:id="@+id/log_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email Address"
         android:layout_margin="8dp"
         android:background="@color/backgroundColor"
         android:drawablePadding="5dp"
-        android:inputType="textEmailAddress"
         android:drawableStart="@drawable/ic_person_black_24dp"
+        android:hint="Email Address"
+        android:inputType="textEmailAddress"
         android:maxLines="1"
         android:padding="10dp" />
 
 
-        <EditText
-            android:id="@+id/log_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:hint="Password"
-            android:background="@color/backgroundColor"
-            android:drawablePadding="5dp"
-            android:drawableStart="@drawable/ic_lock_black_24dp"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:padding="10dp" />
+    <EditText
+        android:id="@+id/log_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/backgroundColor"
+        android:drawablePadding="5dp"
+        android:drawableStart="@drawable/ic_lock_black_24dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:padding="10dp" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_login"
