@@ -18,8 +18,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.regex.Pattern;
 
@@ -68,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
             progressDialog.show();
 
             final DatabaseReference myRootRef = FirebaseDatabase.getInstance().getReference("user_profiles");
+            final DatabaseReference metaDataRef = FirebaseDatabase.getInstance().getReference("meta_data").child("total_users");
 
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -84,20 +88,39 @@ public class RegisterActivity extends AppCompatActivity {
                             } else {
                                 DatabaseReference user_id_ref = myRootRef.child(registration_number);
 
+                                // Setting up the profile of the user
                                 user_profile UProfile = new user_profile();
                                 UProfile.setEmail_address(email);
                                 UProfile.setName(name);
                                 UProfile.setRegistration_number(registration_number);
                                 UProfile.setMobile_number(mobile_no);
+                                UProfile.setAdmin("false");
+                                UProfile.setCredit("0");
 
                                 user_id_ref.setValue(UProfile);
-                                progressDialog.dismiss();
 
-                                Intent temp = new Intent(RegisterActivity.this, LoginActivity.class);
-                                temp.putExtra("user_email", email);
-                                startActivity(temp);
-                                Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
-                                finishAffinity();
+                                // Updating the meta-data of the database
+                                metaDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        int previous_users = Integer.parseInt(dataSnapshot.getValue().toString());
+                                        metaDataRef.setValue(previous_users + 1);
+
+                                        progressDialog.dismiss();
+
+                                        // Moving to the login page after registration
+                                        Intent temp = new Intent(RegisterActivity.this, LoginActivity.class);
+                                        temp.putExtra("user_email", email);
+                                        startActivity(temp);
+                                        Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
+                                        finishAffinity();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -137,6 +160,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (password.isEmpty()) {
             reg_password.setError("This field cannot be empty.");
+            result = false;
+        }
+
+        if (password.length() < 6) {
+            reg_password.setError("The password should contain at-least 6 characters.");
             result = false;
         }
 

@@ -338,6 +338,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Getting the reference for the item in database
                 user_database = FirebaseDatabase.getInstance().getReference().child("user_profiles");
+                final DatabaseReference metaDataRef = FirebaseDatabase.getInstance().getReference("meta_data").child("transaction");
 
                 // Connect to the database and create an event
                 component_database.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -348,6 +349,8 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Not a valid QR code.", Toast.LENGTH_SHORT).show();
 
                         } else if (dataSnapshot.child("IssueDate").getValue().toString().equals("NA")) {
+                            // Add credit code here if needed!
+
                             // Sets the issue/return date
                             component_database.child("CurrentIssue").setValue(user_email);
                             component_database.child("IssueDate").setValue(issueDate);
@@ -363,6 +366,32 @@ public class MainActivity extends AppCompatActivity {
                                         String unique_id = user_database.child(registration_number).child("components_issued").push().getKey();
 
                                         user_database.child(registration_number).child("components_issued").child(unique_id).setValue(item_id);
+
+                                        // Updating the meta-data of the database
+                                        metaDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                int previous_history = Integer.parseInt(dataSnapshot.child("history").getValue().toString());
+                                                int previous_month = Integer.parseInt(dataSnapshot.child("month").child("data").getValue().toString());
+                                                int previous_week = Integer.parseInt(dataSnapshot.child("week").child("data").getValue().toString());
+                                                int previous_year = Integer.parseInt(dataSnapshot.child("year").child("data").getValue().toString());
+
+                                                metaDataRef.child("history").setValue(previous_history + 1);
+                                                metaDataRef.child("month").child("data").setValue(previous_month + 1);
+                                                metaDataRef.child("week").child("data").setValue(previous_week + 1);
+                                                metaDataRef.child("year").child("data").setValue(previous_year + 1);
+
+                                                scan_progress.dismiss();
+
+                                                // Closure message
+                                                Toast.makeText(getApplicationContext(), "The item has been issued!", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
                                     }
                                 }
 
@@ -371,11 +400,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 }
                             });
-
-                            scan_progress.dismiss();
-
-                            // Closure message
-                            Toast.makeText(getApplicationContext(), "The item has been issued!", Toast.LENGTH_SHORT).show();
                         } else {
                             scan_progress.dismiss();
 
@@ -397,6 +421,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
+
+            scan_progress.dismiss();
         } else {
             SharedPreferences store_content = getApplicationContext().getSharedPreferences("system_data", 0);
             Editor editor = store_content.edit();

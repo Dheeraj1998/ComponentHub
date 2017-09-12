@@ -9,6 +9,8 @@ public class user_profile {
     private String mobile_number;
     private String email_address;
     private String registration_number;
+    private String credit;
+    private String admin;
 
     public user_profile() {
       /* Blank default constructor essential for Firebase */
@@ -45,5 +47,21 @@ public class user_profile {
 
     public void setRegistration_number(String registration_number) {
         this.registration_number = registration_number;
+    }
+
+    public String getCredit() {
+        return credit;
+    }
+
+    public void setCredit(String credit) {
+        this.credit = credit;
+    }
+
+    public String getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(String admin) {
+        this.admin = admin;
     }
 }
